@@ -5,7 +5,7 @@ function Table({ paintings, handleEdit, handleDelete }) {
 
     return (
         <div className="container mt-3">
-            <table id="table" className={'table table-dark table-hover'}>
+            <table id="table" style={{borderRadius: '4px', overflow:"hidden"}} className={'table table-dark table-hover'}>
                 <thead>
                     <tr>
                         <th>Name</th>
