@@ -9,6 +9,10 @@ const TableContainer = () => {
 
     }
     const handleDelete = (id) => {
+        fetch(`http://localhost:3000/paintings/${id}`, {
+            method: 'DELETE'
+        })
+        //handle error
         let paintingsUpdated = paintings.filter(p => p.id !== id);
         setPaintings(paintingsUpdated);
     }
