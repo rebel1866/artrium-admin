@@ -5,6 +5,13 @@ const TableContainer = () => {
 
     const [paintings, setPaintings] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
+    const handleEdit = (id) => {
+
+    }
+    const handleDelete = (id) => {
+        let paintingsUpdated = paintings.filter(p => p.id !== id);
+        setPaintings(paintingsUpdated);
+    }
 
     useEffect(() => {
         setTimeout(() => {
@@ -21,7 +28,7 @@ const TableContainer = () => {
     return (
         <div id="tableContainer">
             {isLoading && 'Please, wait...'}
-            {paintings != null && <Table paintings={paintings} />}
+            {paintings != null && <Table paintings={paintings} handleDelete={handleDelete} handleEdit={handleEdit} />}
         </div>
 
     );

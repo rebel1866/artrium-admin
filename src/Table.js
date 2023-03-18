@@ -1,6 +1,6 @@
 
 
-function Table({ paintings }) {
+function Table({ paintings, handleEdit, handleDelete }) {
 
 
     return (
@@ -16,6 +16,8 @@ function Table({ paintings }) {
                         <th>State</th>
                         <th>Brand</th>
                         <th>Amount</th>
+                        <th></th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -29,6 +31,8 @@ function Table({ paintings }) {
                             <td>{painting.state}</td>
                             <td>{painting.brand}</td>
                             <td>{painting.amount}</td>
+                            <td><button onClick={()=> handleEdit(painting.id)} className={'btn btn-primary'}>Edit</button></td>
+                            <td><button onClick={()=> handleDelete(painting.id)} className={'btn btn-danger'}>Delete</button></td>
                         </tr>
                     ))}
                 </tbody>
