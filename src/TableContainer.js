@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import AddModal from "./AddModal";
 import Table from "./Table";
 
 const TableContainer = () => {
@@ -7,6 +8,9 @@ const TableContainer = () => {
     const [isLoading, setIsLoading] = useState(true);
     const handleEdit = (id) => {
 
+    }
+    const handleChange = (e) =>{
+        console.log(e.target.value);
     }
     const handleDelete = (id) => {
         fetch(`http://localhost:3000/paintings/${id}`, {
@@ -30,7 +34,8 @@ const TableContainer = () => {
 
 
     return (
-        <div id="tableContainer">
+        <div id="tableContainer" className={'container mt-3'}>
+            <AddModal handleChange={handleChange}/>
             {isLoading && 'Please, wait...'}
             {paintings != null && <Table paintings={paintings} handleDelete={handleDelete} handleEdit={handleEdit} />}
         </div>
