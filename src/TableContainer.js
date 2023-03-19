@@ -1,11 +1,14 @@
 import { useEffect, useState } from "react";
 import AddModal from "./AddModal";
 import Table from "./Table";
+import AlertSuccess from "./AlertSucess";
+
 
 const TableContainer = () => {
 
     const [paintings, setPaintings] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
+    const [isSuccessVisisble, setIsSuccessVisisble] = useState(false);
     const [newPaint, setNewPaint] = useState({
         name: '',
         price: '',
@@ -33,12 +36,17 @@ const TableContainer = () => {
                 'Content-Type': 'application/json;charset=utf-8'
             },
             body: JSON.stringify(newPaint)
-        }).then(() => {
-            let paintings1 = [...paintings];
-            paintings1.push(newPaint);
-            setPaintings(paintings1);
-            document.querySelector('.btn-close').click();
-        });
+        }).then(res => res.json())
+            .then((data) => {
+                let paintings1 = [...paintings];
+                paintings1.push(data);
+                setPaintings(paintings1);
+                document.querySelector('.modal-header .btn-close').click();
+                setIsSuccessVisisble(true);
+                setTimeout(() => {
+                    document.querySelector('.alert .btn-close').click();
+                }, 1000);
+            });
     }
     const handleDelete = (id) => {
         fetch(`http://localhost:3000/paintings/${id}`, {
@@ -62,8 +70,9 @@ const TableContainer = () => {
 
 
     return (
-        <div id="tableContainer" className={'container mt-3'}>
-            <AddModal handleChange={handleChange} newPaint={newPaint} handleSubmit={handleSubmit} />
+        <div id="tableContainer" className={'container mt-3'} style={{ position: 'relative' }}>
+            {isSuccessVisisble && <AlertSuccess />}
+            {paintings != null && <AddModal handleChange={handleChange} newPaint={newPaint} handleSubmit={handleSubmit} />}
             {isLoading && 'Please, wait...'}
             {paintings != null && <Table paintings={paintings} handleDelete={handleDelete} handleEdit={handleEdit} />}
         </div>
