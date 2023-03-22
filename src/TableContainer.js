@@ -1,3 +1,4 @@
+import * as React from 'react';
 import { useEffect, useState } from "react";
 import AddModal from "./AddModal";
 import Table from "./Table";
@@ -24,7 +25,7 @@ const TableContainer = () => {
 
     const [paintings, setPaintings] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
-    const [isSuccessVisisble, setIsSuccessVisisble] = useState(false);
+    const [openSuccess, setOpenSuccess] = useState(false);
     const [newPaint, setNewPaint] = useState(defaultNewPaint);
     const [validation, setValidation] = useState(defaultV);
 
@@ -68,12 +69,11 @@ const TableContainer = () => {
                 let paintings1 = [...paintings];
                 paintings1.push(data);
                 setPaintings(paintings1);
-                document.querySelector('.modal-header .btn-close').click();
-                setIsSuccessVisisble(true);
+                setOpen(false);
+                setOpenSuccess(true);
                 setTimeout(() => {
-                    document.querySelector('.alert .btn-close').click();
-                    setIsSuccessVisisble(false);
-                }, 1000);
+                    setOpenSuccess(false);
+                }, 2000);
             });
     }
     const handleDelete = (id) => {
@@ -105,11 +105,25 @@ const TableContainer = () => {
         setNewPaint(defaultNewPaint);
     }
 
+    const [open, setOpen] = useState(false);
+
+    const handleClickOpen = () => {
+        clearValidation();
+        setOpen(true);
+    };
+
+    const handleClose = () => {
+        setOpen(false);
+    };
+
     return (
         <div id="tableContainer" className={'container mt-3'} style={{ position: 'relative' }}>
-            {isSuccessVisisble && <AlertSuccess />}
+            <div style={{position:'absolute', top:'0', width:'100%'}}>
+            {openSuccess && <AlertSuccess openSucess={openSuccess} />}
+            </div>
             {paintings != null && <AddModal handleChange={handleChange} newPaint={newPaint} handleSubmit={handleSubmit}
-                validation={validation} loseFocus={loseFocus} clearValidation={clearValidation} />}
+                validation={validation} loseFocus={loseFocus}
+                handleClickOpen={handleClickOpen} handleClose={handleClose} open={open} />}
             {isLoading && 'Please, wait...'}
             {paintings != null && <Table paintings={paintings} handleDelete={handleDelete} handleEdit={handleEdit} />}
         </div>

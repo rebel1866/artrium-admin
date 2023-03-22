@@ -1,10 +1,31 @@
-const AlertSuccess = () => {
+
+import * as React from 'react';
+import Box from '@mui/material/Box';
+import Alert from '@mui/material/Alert';
+import IconButton from '@mui/material/IconButton';
+import { Fade } from '@mui/material';
+
+const AlertSuccess = ({openSucess}) => {
+
 
     return (
-        <div class="alert alert-success alert-dismissible fade show" style={{ position: 'absolute', width: '100%' }}>
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            <strong>Success!</strong> New painting has been added.
-        </div>
-    )
+        <Box sx={{ width: '100%' }}>
+            <Fade timeout={2000} in={openSucess}>
+                <Alert
+                    action={
+                        <IconButton
+                            aria-label="close"
+                            color="inherit"
+                            size="small"
+                        >
+                        </IconButton>
+                    }
+                    sx={{ mb: 2 }}
+                >
+                    Close me!
+                </Alert>
+            </Fade>
+        </Box>
+    );
 }
 export default AlertSuccess;
