@@ -10,7 +10,7 @@ const AlertSuccess = ({openSucess}) => {
 
     return (
         <Box sx={{ width: '100%' }}>
-            <Fade timeout={2000} in={openSucess}>
+            <Fade timeout={1000} enter={false} unmountOnExit={true} in={openSucess}>
                 <Alert
                     action={
                         <IconButton
@@ -22,7 +22,7 @@ const AlertSuccess = ({openSucess}) => {
                     }
                     sx={{ mb: 2 }}
                 >
-                    Close me!
+                    New painting has been successfully added!
                 </Alert>
             </Fade>
         </Box>

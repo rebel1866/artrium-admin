@@ -30,6 +30,27 @@ const TableContainer = () => {
     const [validation, setValidation] = useState(defaultV);
 
 
+    function isValid() {
+        let isValid = true;
+        if (newPaint.name === '') {
+            setValidation(values => ({ ...values, name: 'Name must not be blank' }));
+            isValid = false;
+        }
+        if (newPaint.price <= 0) {
+            setValidation(values => ({ ...values, price: 'Price must be greater than 0' }));
+            isValid = false;
+        }
+        if (newPaint.year <= 0) {
+            setValidation(values => ({ ...values, year: 'Year must be greater than 0' }));
+            isValid = false;
+
+        }
+        if (newPaint.year > 3000) {
+            setValidation(values => ({ ...values, year: 'I doubt you could live so long' }));
+            isValid = false;
+        }
+        return isValid;
+    }
     const handleEdit = (id) => {
 
     }
@@ -38,25 +59,7 @@ const TableContainer = () => {
         setNewPaint(values => ({ ...values, [name]: e.target.value }));
     }
     const handleSubmit = () => {
-        let isNotValid = false;
-        if (newPaint.name === '') {
-            setValidation(values => ({ ...values, name: 'Name must not be blank' }));
-            isNotValid = true;
-        }
-        if (newPaint.price <= 0) {
-            setValidation(values => ({ ...values, price: 'Price must be greater than 0' }));
-            isNotValid = true;
-        }
-        if (newPaint.year <= 0) {
-            setValidation(values => ({ ...values, year: 'Year must be greater than 0' }));
-            isNotValid = true;
-
-        }
-        if (newPaint.year > 3000) {
-            setValidation(values => ({ ...values, year: 'I doubt you could live so long' }));
-            isNotValid = true;
-        }
-        if (isNotValid) return;
+        if (!isValid()) return;
 
         fetch('http://localhost:3000/paintings', {
             method: 'POST',
@@ -73,7 +76,7 @@ const TableContainer = () => {
                 setOpenSuccess(true);
                 setTimeout(() => {
                     setOpenSuccess(false);
-                }, 2000);
+                }, 1000);
             });
     }
     const handleDelete = (id) => {
@@ -118,8 +121,8 @@ const TableContainer = () => {
 
     return (
         <div id="tableContainer" className={'container mt-3'} style={{ position: 'relative' }}>
-            <div style={{position:'absolute', top:'0', width:'100%'}}>
-            {openSuccess && <AlertSuccess openSucess={openSuccess} />}
+            <div style={{ position: 'absolute', top: '0', width: '100%' }}>
+                { <AlertSuccess openSucess={openSuccess} />}
             </div>
             {paintings != null && <AddModal handleChange={handleChange} newPaint={newPaint} handleSubmit={handleSubmit}
                 validation={validation} loseFocus={loseFocus}
