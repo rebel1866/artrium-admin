@@ -22,7 +22,9 @@ function Table({ paintings, handleEdit, handleDelete }) {
                 </thead>
                 <tbody>
                     {paintings.map((painting) => (
+    
                         <tr key={painting.id}>
+                            {/* {console.log(painting)} */}
                             <td>{painting.name}</td>
                             <td>{painting.author}</td>
                             <td>{painting.price}</td>

@@ -67,9 +67,15 @@ const TableContainer = () => {
                 'Content-Type': 'application/json;charset=utf-8'
             },
             body: JSON.stringify(newPaint)
-        }).then(res => res.json())
+        }).then(res => {
+            if (!res.ok) {
+                throw Error('Fail');
+            }
+            return res.json()
+        })
             .then((data) => {
                 let paintings1 = [...paintings];
+                console.log(data + ' hhh');
                 paintings1.push(data);
                 setPaintings(paintings1);
                 setOpen(false);
@@ -77,13 +83,15 @@ const TableContainer = () => {
                 setTimeout(() => {
                     setOpenSuccess(false);
                 }, 1000);
+            })
+            .catch(err => {
+                console.log(err.message);    //handle error
             });
     }
     const handleDelete = (id) => {
         fetch(`http://localhost:3000/paintings/${id}`, {
             method: 'DELETE'
         })
-        //handle error
         let paintingsUpdated = paintings.filter(p => p.id !== id);
         setPaintings(paintingsUpdated);
     }
@@ -122,7 +130,7 @@ const TableContainer = () => {
     return (
         <div id="tableContainer" className={'container mt-3'} style={{ position: 'relative' }}>
             <div style={{ position: 'absolute', top: '0', width: '100%' }}>
-                { <AlertSuccess openSucess={openSuccess} />}
+                {<AlertSuccess openSucess={openSuccess} />}
             </div>
             {paintings != null && <AddModal handleChange={handleChange} newPaint={newPaint} handleSubmit={handleSubmit}
                 validation={validation} loseFocus={loseFocus}
