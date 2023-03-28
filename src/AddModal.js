@@ -35,7 +35,7 @@ const AddModal = ({ handleChange, newPaint, handleSubmit, validation, loseFocus,
 
                 <DialogTitle>{"Add new painting"}</DialogTitle>
                 <DialogContent>
-                    <DialogContentText id="alert-dialog-slide-description">
+                    <DialogContentText component={'span'} id="alert-dialog-slide-description">
                         <div onChange={(e) => handleChange(e)}>
                             <div className={"row"}>
                                 <div className={"col"}>
