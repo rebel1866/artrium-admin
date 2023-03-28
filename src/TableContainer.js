@@ -41,8 +41,11 @@ const TableContainer = () => {
     const [page, setPage] = useState(1);
     const [count, setCount] = useState(0);
     const handleChangePage = (event, value) => {
+        setWaitSpinner(true);
         setPage(value);
     };
+    const [waitSpinner, setWaitSpinner] = useState(false);
+
 
 
     function isValid() {
@@ -123,13 +126,14 @@ const TableContainer = () => {
         setTimeout(() => {
             fetch(`http://localhost:3000/paintings?_page=${page}&_limit=10`)
                 .then((res) => {
-                    countItems = Math.ceil(res.headers.get('X-Total-Count')/10);
+                    countItems = Math.ceil(res.headers.get('X-Total-Count') / 10);
                     return res.json()
                 })
                 .then((paintings => {
                     setPaintings(paintings);
                     setIsLoading(false);
                     setCount(countItems);
+                    setWaitSpinner(false);
                 }));
         }, 500)
     }, [page]);
@@ -169,6 +173,21 @@ const TableContainer = () => {
             {isLoading && 'Please, wait...'}
             {paintings != null && <Table paintings={paintings} handleDelete={handleDelete} handleEdit={handleEdit} />}
             {paintings != null && <Pagination count={count} page={page} onChange={handleChangePage} />}
+            {waitSpinner && (<div style={
+                {
+                    position: 'absolute',
+                    width: '150px',
+                    height: '130px',
+                    backgroundColor: 'white',
+                    top: '40%',
+                    left: '40%',
+                    borderRadius: '3px'
+                }
+            }>
+                <div style={{  position: 'absolute',
+                    top: '40%',
+                    left: '40%',}} className={"spinner-border text-success"}></div>
+            </div>)}
         </div>
     );
 }
