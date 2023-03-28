@@ -6,6 +6,7 @@ import AlertSuccess from "./AlertSucess";
 import { AddErrorModal } from './AddErrorModal';
 import { DeleteConfirmation } from './DeleteConfirmation';
 import Pagination from '@mui/material/Pagination';
+import isValid from './Validator';
 
 
 const TableContainer = () => {
@@ -47,28 +48,6 @@ const TableContainer = () => {
     const [waitSpinner, setWaitSpinner] = useState(false);
 
 
-
-    function isValid() {
-        let isValid = true;
-        if (newPaint.name === '') {
-            setValidation(values => ({ ...values, name: 'Name must not be blank' }));
-            isValid = false;
-        }
-        if (newPaint.price <= 0) {
-            setValidation(values => ({ ...values, price: 'Price must be greater than 0' }));
-            isValid = false;
-        }
-        if (newPaint.year <= 0) {
-            setValidation(values => ({ ...values, year: 'Year must be greater than 0' }));
-            isValid = false;
-
-        }
-        if (newPaint.year > 3000) {
-            setValidation(values => ({ ...values, year: 'I doubt you could live so long' }));
-            isValid = false;
-        }
-        return isValid;
-    }
     const handleEdit = (id) => {
 
     }
@@ -77,7 +56,7 @@ const TableContainer = () => {
         setNewPaint(values => ({ ...values, [name]: e.target.value }));
     }
     const handleSubmit = () => {
-        if (!isValid()) return;
+        if (!isValid(newPaint, setValidation)) return;
 
         fetch('http://localhost:3000/paintings', {
             method: 'POST',
