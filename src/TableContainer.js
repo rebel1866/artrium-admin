@@ -5,6 +5,7 @@ import Table from "./Table";
 import AlertSuccess from "./AlertSucess";
 import { AddErrorModal } from './AddErrorModal';
 import { DeleteConfirmation } from './DeleteConfirmation';
+import Pagination from '@mui/material/Pagination';
 
 
 const TableContainer = () => {
@@ -37,6 +38,11 @@ const TableContainer = () => {
     const [idToDelete, setIdDelete] = useState(0);
 
 
+    const [page, setPage] = useState(1);
+    const [count, setCount] = useState(0);
+    const handleChangePage = (event, value) => {
+        setPage(value);
+    };
 
 
     function isValid() {
@@ -113,15 +119,20 @@ const TableContainer = () => {
     }
 
     useEffect(() => {
+        let countItems;
         setTimeout(() => {
-            fetch('http://localhost:3000/paintings')
-                .then((res) => res.json())
+            fetch(`http://localhost:3000/paintings?_page=${page}&_limit=10`)
+                .then((res) => {
+                    countItems = Math.ceil(res.headers.get('X-Total-Count')/10);
+                    return res.json()
+                })
                 .then((paintings => {
                     setPaintings(paintings);
                     setIsLoading(false);
+                    setCount(countItems);
                 }));
         }, 500)
-    }, []);
+    }, [page]);
 
     const loseFocus = (name) => {
         setValidation(values => ({ ...values, [name]: '' }));
@@ -143,6 +154,8 @@ const TableContainer = () => {
         setOpen(false);
     };
 
+
+
     return (
         <div id="tableContainer" className={'container mt-3'} style={{ position: 'relative' }}>
             <div style={{ position: 'absolute', top: '0', width: '100%' }}>
@@ -155,8 +168,8 @@ const TableContainer = () => {
                 handleClickOpen={handleClickOpen} handleClose={handleClose} open={open} />}
             {isLoading && 'Please, wait...'}
             {paintings != null && <Table paintings={paintings} handleDelete={handleDelete} handleEdit={handleEdit} />}
+            {paintings != null && <Pagination count={count} page={page} onChange={handleChangePage} />}
         </div>
-
     );
 }
 
