@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import AddModal from "./AddModal";
 import Table from "./Table";
 import AlertSuccess from "./AlertSucess";
+import { AddErrorModal } from './AddErrorModal';
 
 
 const TableContainer = () => {
@@ -28,6 +29,8 @@ const TableContainer = () => {
     const [openSuccess, setOpenSuccess] = useState(false);
     const [newPaint, setNewPaint] = useState(defaultNewPaint);
     const [validation, setValidation] = useState(defaultV);
+    const [openError, setOpenError] = useState(false);
+    const [eMessage, setEMessage] = useState(null);
 
 
     function isValid() {
@@ -85,7 +88,8 @@ const TableContainer = () => {
                 }, 1000);
             })
             .catch(err => {
-                console.log(err.message);    //handle error
+               setOpenError(true);
+               setEMessage(err.message);
             });
     }
     const handleDelete = (id) => {
@@ -132,6 +136,7 @@ const TableContainer = () => {
             <div style={{ position: 'absolute', top: '0', width: '100%' }}>
                 {<AlertSuccess openSucess={openSuccess} />}
             </div>
+            {openError && <AddErrorModal openError={openError} setOpenError={setOpenError} eMessage={eMessage}/>}
             {paintings != null && <AddModal handleChange={handleChange} newPaint={newPaint} handleSubmit={handleSubmit}
                 validation={validation} loseFocus={loseFocus}
                 handleClickOpen={handleClickOpen} handleClose={handleClose} open={open} />}
