@@ -34,7 +34,7 @@ function Table({ paintings, handleEdit, handleDelete }) {
                             <td>{painting.brand}</td>
                             <td>{painting.amount}</td>
                             <td><button onClick={()=> handleEdit(painting.id)} className={'btn btn-primary'}>Edit</button></td>
-                            <td><button onClick={()=> handleDelete(painting.id)} className={'btn btn-danger'}>Delete</button></td>
+                            <td><button onClick={()=> handleDelete(painting.id, painting.name)} className={'btn btn-danger'}>Delete</button></td>
                         </tr>
                     ))}
                 </tbody>

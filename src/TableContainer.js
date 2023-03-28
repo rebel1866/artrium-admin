@@ -4,6 +4,7 @@ import AddModal from "./AddModal";
 import Table from "./Table";
 import AlertSuccess from "./AlertSucess";
 import { AddErrorModal } from './AddErrorModal';
+import { DeleteConfirmation } from './DeleteConfirmation';
 
 
 const TableContainer = () => {
@@ -31,6 +32,11 @@ const TableContainer = () => {
     const [validation, setValidation] = useState(defaultV);
     const [openError, setOpenError] = useState(false);
     const [eMessage, setEMessage] = useState(null);
+    const [openDelete, setOpenDelete] = useState(false);
+    const [itemName, setItemName] = useState('default');
+    const [idToDelete, setIdDelete] = useState(0);
+
+
 
 
     function isValid() {
@@ -88,16 +94,22 @@ const TableContainer = () => {
                 }, 1000);
             })
             .catch(err => {
-               setOpenError(true);
-               setEMessage(err.message);
+                setOpenError(true);
+                setEMessage(err.message);
             });
     }
-    const handleDelete = (id) => {
-        fetch(`http://localhost:3000/paintings/${id}`, {
+    const handleDelete = (id, itemName) => {
+        setOpenDelete(true);
+        setIdDelete(id);
+        setItemName(itemName);
+    }
+    const handleYes = () => {
+        fetch(`http://localhost:3000/paintings/${idToDelete}`, {
             method: 'DELETE'
         })
-        let paintingsUpdated = paintings.filter(p => p.id !== id);
+        let paintingsUpdated = paintings.filter(p => p.id !== idToDelete);
         setPaintings(paintingsUpdated);
+        setOpenDelete(false);
     }
 
     useEffect(() => {
@@ -136,7 +148,8 @@ const TableContainer = () => {
             <div style={{ position: 'absolute', top: '0', width: '100%' }}>
                 {<AlertSuccess openSucess={openSuccess} />}
             </div>
-            {openError && <AddErrorModal openError={openError} setOpenError={setOpenError} eMessage={eMessage}/>}
+            {openError && <AddErrorModal openError={openError} setOpenError={setOpenError} eMessage={eMessage} />}
+            {openDelete && <DeleteConfirmation openDelete={openDelete} setOpenDelete={setOpenDelete} itemName={itemName} handleYes={handleYes} />}
             {paintings != null && <AddModal handleChange={handleChange} newPaint={newPaint} handleSubmit={handleSubmit}
                 validation={validation} loseFocus={loseFocus}
                 handleClickOpen={handleClickOpen} handleClose={handleClose} open={open} />}
