@@ -7,6 +7,7 @@ import { AddErrorModal } from './AddErrorModal';
 import { DeleteConfirmation } from './DeleteConfirmation';
 import Pagination from '@mui/material/Pagination';
 import isValid from './Validator';
+import WaitSpinner from './WaitSpinner';
 
 
 const TableContainer = () => {
@@ -37,20 +38,37 @@ const TableContainer = () => {
     const [openDelete, setOpenDelete] = useState(false);
     const [itemName, setItemName] = useState('default');
     const [idToDelete, setIdDelete] = useState(0);
-
-
+    const [open, setOpen] = useState(false);
     const [page, setPage] = useState(1);
     const [count, setCount] = useState(0);
+    const [waitSpinner, setWaitSpinner] = useState(false);
+
+    useEffect(() => {
+        let countItems;
+        setTimeout(() => {
+            fetch(`http://localhost:3000/paintings?_page=${page}&_limit=10`)
+                .then((res) => {
+                    countItems = Math.ceil(res.headers.get('X-Total-Count') / 10);
+                    return res.json()
+                })
+                .then((paintings => {
+                    setPaintings(paintings);
+                    setIsLoading(false);
+                    setCount(countItems);
+                    setWaitSpinner(false);
+                }));
+        }, 500)
+    }, [page]);
+
     const handleChangePage = (event, value) => {
         setWaitSpinner(true);
         setPage(value);
     };
-    const [waitSpinner, setWaitSpinner] = useState(false);
-
 
     const handleEdit = (id) => {
 
     }
+
     const handleChange = (e) => {
         let name = e.target.name;
         setNewPaint(values => ({ ...values, [name]: e.target.value }));
@@ -100,22 +118,7 @@ const TableContainer = () => {
         setOpenDelete(false);
     }
 
-    useEffect(() => {
-        let countItems;
-        setTimeout(() => {
-            fetch(`http://localhost:3000/paintings?_page=${page}&_limit=10`)
-                .then((res) => {
-                    countItems = Math.ceil(res.headers.get('X-Total-Count') / 10);
-                    return res.json()
-                })
-                .then((paintings => {
-                    setPaintings(paintings);
-                    setIsLoading(false);
-                    setCount(countItems);
-                    setWaitSpinner(false);
-                }));
-        }, 500)
-    }, [page]);
+
 
     const loseFocus = (name) => {
         setValidation(values => ({ ...values, [name]: '' }));
@@ -126,17 +129,11 @@ const TableContainer = () => {
         setNewPaint(defaultNewPaint);
     }
 
-    const [open, setOpen] = useState(false);
 
     const handleClickOpen = () => {
         clearValidation();
         setOpen(true);
     };
-
-    const handleClose = () => {
-        setOpen(false);
-    };
-
 
 
     return (
@@ -148,25 +145,11 @@ const TableContainer = () => {
             {openDelete && <DeleteConfirmation openDelete={openDelete} setOpenDelete={setOpenDelete} itemName={itemName} handleYes={handleYes} />}
             {paintings != null && <AddModal handleChange={handleChange} newPaint={newPaint} handleSubmit={handleSubmit}
                 validation={validation} loseFocus={loseFocus}
-                handleClickOpen={handleClickOpen} handleClose={handleClose} open={open} />}
+                handleClickOpen={handleClickOpen} handleClose={() => setOpen(false)} open={open} />}
             {isLoading && 'Please, wait...'}
             {paintings != null && <Table paintings={paintings} handleDelete={handleDelete} handleEdit={handleEdit} />}
             {paintings != null && <Pagination count={count} page={page} onChange={handleChangePage} />}
-            {waitSpinner && (<div style={
-                {
-                    position: 'absolute',
-                    width: '150px',
-                    height: '130px',
-                    backgroundColor: 'white',
-                    top: '40%',
-                    left: '40%',
-                    borderRadius: '3px'
-                }
-            }>
-                <div style={{  position: 'absolute',
-                    top: '40%',
-                    left: '40%',}} className={"spinner-border text-success"}></div>
-            </div>)}
+            {waitSpinner && <WaitSpinner/>}
         </div>
     );
 }
