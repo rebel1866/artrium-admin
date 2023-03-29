@@ -90,7 +90,6 @@ const TableContainer = () => {
         })
             .then((data) => {
                 let paintings1 = [...paintings];
-                console.log(data + ' hhh');
                 paintings1.push(data);
                 setPaintings(paintings1);
                 setOpen(false);
