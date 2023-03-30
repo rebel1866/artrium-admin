@@ -10,7 +10,8 @@ const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const AddModal = ({ handleChange, newPaint, handleSubmit, validation, loseFocus, handleClickOpen, handleClose, open }) => {
+const AddModal = ({ properties }) => {
+    const {handleChange, newPaint, handleSubmit, validation, loseFocus, handleClickOpen, handleClose, open, isEdit, handleUpdate} = properties;
 
     let eStyle = { border: '1px solid red' }
 
@@ -33,7 +34,7 @@ const AddModal = ({ handleChange, newPaint, handleSubmit, validation, loseFocus,
                 aria-describedby="alert-dialog-slide-description"
             >
 
-                <DialogTitle>{"Add new painting"}</DialogTitle>
+                <DialogTitle>{ isEdit ? "Edit painting" :"Add new painting"}</DialogTitle>
                 <DialogContent>
                     <DialogContentText component={'span'} id="alert-dialog-slide-description">
                         <div onChange={(e) => handleChange(e)}>
@@ -56,7 +57,7 @@ const AddModal = ({ handleChange, newPaint, handleSubmit, validation, loseFocus,
                             </div>
                         </div>
                         <div style={{ textAlign: 'center' }}>
-                            <button onClick={handleSubmit} className={'btn btn-primary'} style={{ width: '100px' }}>Save</button>
+                            <button onClick={isEdit ? handleUpdate : handleSubmit} className={'btn btn-primary'} style={{ width: '100px' }}>{isEdit ? 'Update': "Save"}</button>
                         </div>
 
                     </DialogContentText>

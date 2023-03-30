@@ -8,6 +8,7 @@ import { DeleteConfirmation } from './DeleteConfirmation';
 import Pagination from '@mui/material/Pagination';
 import isValid from './Validator';
 import WaitSpinner from './WaitSpinner';
+import { SuccessUpdated } from './SuccessUpdated';
 
 
 const TableContainer = () => {
@@ -42,6 +43,9 @@ const TableContainer = () => {
     const [page, setPage] = useState(1);
     const [count, setCount] = useState(0);
     const [waitSpinner, setWaitSpinner] = useState(false);
+    const [isEdit, setIsEdit] = useState(false);
+    const [updatedDialog, setUpdatedDialog] = useState(false);
+
 
     useEffect(() => {
         let countItems;
@@ -66,7 +70,36 @@ const TableContainer = () => {
     };
 
     const handleEdit = (id) => {
+        clearValidation();
+        setOpen(true);
+        setIsEdit(true);
+        let p = paintings.filter((painting) => painting.id === id);
+        setNewPaint(...p);
+    }
+    const handleUpdate = () => {
+        if (!isValid(newPaint, setValidation)) return;
 
+        fetch(`http://localhost:3000/paintings/${newPaint.id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json;charset=utf-8'
+            },
+            body: JSON.stringify(newPaint)
+        }).then(res => {
+            return res.json()
+        })
+            .then((data) => {
+                let paintings1 = [...paintings];
+                for (let i = 0; i < paintings1.length; i++) {
+                    if (paintings1[i].id === newPaint.id) {
+                        paintings1[i] = data;
+                    }
+                }
+                console.log(paintings1);
+                setPaintings(paintings1);
+                setOpen(false);
+                setUpdatedDialog(true);
+            })
     }
 
     const handleChange = (e) => {
@@ -132,6 +165,8 @@ const TableContainer = () => {
     const handleClickOpen = () => {
         clearValidation();
         setOpen(true);
+        setIsEdit(false);
+
     };
 
 
@@ -142,13 +177,16 @@ const TableContainer = () => {
             </div>
             {openError && <AddErrorModal openError={openError} setOpenError={setOpenError} eMessage={eMessage} />}
             {openDelete && <DeleteConfirmation openDelete={openDelete} setOpenDelete={setOpenDelete} itemName={itemName} handleYes={handleYes} />}
-            {paintings != null && <AddModal handleChange={handleChange} newPaint={newPaint} handleSubmit={handleSubmit}
-                validation={validation} loseFocus={loseFocus}
-                handleClickOpen={handleClickOpen} handleClose={() => setOpen(false)} open={open} />}
+            {paintings != null && <AddModal properties={{
+                handleChange: handleChange, newPaint: newPaint, handleSubmit: handleSubmit,
+                validation: validation, loseFocus: loseFocus, handleClickOpen: handleClickOpen, handleClose: () => setOpen(false), open: open,
+                isEdit: isEdit, handleUpdate: handleUpdate
+            }} />}
             {isLoading && 'Please, wait...'}
             {paintings != null && <Table paintings={paintings} handleDelete={handleDelete} handleEdit={handleEdit} />}
             {paintings != null && <Pagination count={count} page={page} onChange={handleChangePage} />}
-            {waitSpinner && <WaitSpinner/>}
+            {waitSpinner && <WaitSpinner />}
+            {updatedDialog && <SuccessUpdated updated={updatedDialog} close={() => setUpdatedDialog(false)}/>}
         </div>
     );
 }
